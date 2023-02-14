@@ -15,7 +15,17 @@ public class AnimatedSprite : MonoBehaviour
     {
         Invoke(nameof(Animate), 0f);    
     }
-
+    private void Update()
+    {
+        if(Time.timeScale == 0)
+        {
+            CancelInvoke();
+        }
+        else
+        {
+            Invoke(nameof(Animate), 1f / GameManager.Instance.gameSpeed);
+        }
+    }
     private void Animate()
     {
         frame++;
@@ -27,6 +37,8 @@ public class AnimatedSprite : MonoBehaviour
         {
             spriteRenderer.sprite = sprites[frame];
         }
+        
         Invoke(nameof(Animate), 1f / GameManager.Instance.gameSpeed);
     }
+    
 }

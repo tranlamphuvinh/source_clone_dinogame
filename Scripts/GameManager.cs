@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
 
 public class GameManager : MonoBehaviour
@@ -15,6 +16,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI gameOverText;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI hiscoreText;
+    public TextMeshProUGUI noteText;
     public Button retryButton;
 
     private PlayerController playerController;
@@ -23,7 +25,7 @@ public class GameManager : MonoBehaviour
     private float score;
     private void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;    
         }
@@ -42,12 +44,20 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         playerController = FindObjectOfType<PlayerController>();   
-        spawnManager = FindObjectOfType<SpawnManager>();    
+        spawnManager = FindObjectOfType<SpawnManager>();
 
-        NewGame();
+        Time.timeScale = 0;
+
+        playerController.gameObject.SetActive(false);
+        spawnManager.gameObject.SetActive(false);
+
+        noteText.gameObject.SetActive(true);
+        gameOverText.gameObject.SetActive(false);
+        retryButton.gameObject.SetActive(false);
     }
     public void NewGame()
     {
+        
         Obstacle[] obstacles = FindObjectsOfType<Obstacle>();   
 
         foreach(var obstacle in obstacles)
@@ -62,6 +72,7 @@ public class GameManager : MonoBehaviour
         playerController.gameObject.SetActive(true);    
         spawnManager.gameObject.SetActive(true);
 
+        noteText.gameObject.SetActive(false);
         gameOverText.gameObject.SetActive(false);
         retryButton.gameObject.SetActive(false);
 
@@ -75,6 +86,7 @@ public class GameManager : MonoBehaviour
         playerController.gameObject.SetActive(false);
         spawnManager.gameObject.SetActive(false);
 
+        noteText.gameObject.SetActive(false);
         gameOverText.gameObject.SetActive(true);
         retryButton.gameObject.SetActive(true);
 
@@ -82,6 +94,11 @@ public class GameManager : MonoBehaviour
     }
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            Time.timeScale = 1f;
+            NewGame();  
+        }
         gameSpeed += gameSpeedIncrease * Time.deltaTime;
         score += gameSpeed * Time.deltaTime;
         scoreText.text = Mathf.FloorToInt(score).ToString("D5");

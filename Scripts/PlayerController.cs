@@ -10,9 +10,12 @@ public class PlayerController : MonoBehaviour
     public float gravity = 9.81f * 2;
     public float jumpForce = 8.5f;
 
+    private AudioSource playerAudio;
+    public AudioClip jumpSound;
     private void Awake()
     {
         character = GetComponent<CharacterController>();
+        playerAudio = GetComponent<AudioSource>();
     }
     private void OnEnable()
     {
@@ -28,6 +31,8 @@ public class PlayerController : MonoBehaviour
             if (Input.GetButton("Jump"))
             {
                 direction = Vector3.up * jumpForce;
+                playerAudio.PlayOneShot(jumpSound, 1f);
+
             }
         }
         character.Move(direction * Time.deltaTime);
